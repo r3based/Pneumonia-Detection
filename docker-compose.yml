@@ -1,0 +1,39 @@
+# Convenience compose file: brings up either training or evaluation against
+# the host's RSNA dataset directory.  Run with::
+#
+#     docker compose run --rm train
+#     docker compose run --rm evaluate
+#
+# Set ``DATA_ROOT`` in your shell to point at the directory that *contains*
+# ``rsna-pneumonia-detection-challenge/`` (defaults to the current dir).
+
+services:
+  train:
+    build: .
+    image: pneumonia-detection
+    command: ["python", "train.py", "train"]
+    working_dir: /workspace
+    volumes:
+      - ${DATA_ROOT:-.}/rsna-pneumonia-detection-challenge:/workspace/rsna-pneumonia-detection-challenge:ro
+      - ./checkpoints:/workspace/checkpoints
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+    shm_size: "8gb"
+
+  evaluate:
+    build: .
+    image: pneumonia-detection
+    command: ["python", "train.py", "evaluate"]
+    working_dir: /workspace
+    volumes:
+      - ${DATA_ROOT:-.}/rsna-pneumonia-detection-challenge:/workspace/rsna-pneumonia-detection-challenge:ro
+      - ./checkpoints:/workspace/checkpoints
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+    shm_size: "8gb"

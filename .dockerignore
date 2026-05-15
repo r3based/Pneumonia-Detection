@@ -1,0 +1,11 @@
+# Don't ship the dataset, weights or PDF in the build context.
+rsna-pneumonia-detection-challenge/
+checkpoints/
+*.pt
+__pycache__/
+*.pyc
+.git/
+.idea/
+.vscode/
+.claude/
+*.pdf
